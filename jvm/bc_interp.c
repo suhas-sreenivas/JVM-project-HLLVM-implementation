@@ -1776,8 +1776,14 @@ handle_invokedynamic (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_new (u1 * bc, java_class_t * cls) {
-	HB_ERR("%s NOT IMPLEMENTED", __func__);
-	return -1;
+	var_t operand;
+	u2 idx = GET_2B_IDX(bc);
+	java_class_t * resolved_class = hb_resolve_class(idx, cls);
+	operand.obj = gc_obj_alloc(resolved_class);
+	push_val(operand);
+	return 3;
+	// HB_ERR("%s NOT IMPLEMENTED", __func__);
+	// return -1;
 }
 
 // WRITE ME

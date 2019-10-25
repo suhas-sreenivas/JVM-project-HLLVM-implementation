@@ -245,8 +245,37 @@ hb_get_method_idx (const char * name, java_class_t * cls)
 // WRITE ME
 java_class_t * 
 hb_resolve_class (u2 const_idx, java_class_t * src_cls)
-{
-    HB_ERR("%s NOT IMPLEMENTED", __func__);
+{	
+	if(!const_idx) return NULL;
+
+	if (const_idx > src_cls->const_pool_count) {
+		return NULL;
+	}
+
+	if (IS_RESOLVED(src_cls->const_pool[const_idx])) {
+		return (java_class_t *)MASK_RESOLVED_BIT(src_cls->const_pool[const_idx]); //typecast to java_class_t?
+	}
+
+	CONSTANT_Class_info_t * constant_pool_entry = (CONSTANT_Class_info_t *)src_cls->const_pool[const_idx];
+
+	java_class_t * class;
+	char * class_name = hb_get_const_str(constant_pool_entry->name_idx, src_cls);
+
+	if(class = hb_get_class(class_name)){
+		src_cls->const_pool[const_idx] = (const_pool_info_t *)MARK_RESOLVED(class);
+		return class;
+	}
+
+	else{
+		class = hb_load_class(class_name);
+    	hb_add_class(class_name, class);
+    	hb_prep_class(class);
+		hb_init_class(class);
+		src_cls->const_pool[const_idx] = (const_pool_info_t *)MARK_RESOLVED(class);
+		return class;
+	}
+
+    // HB_ERR("%s NOT IMPLEMENTED", __func__);
     return NULL;
 }
 
@@ -343,8 +372,25 @@ hb_resolve_method (u2 const_idx,
 		   java_class_t * src_cls,
 		   java_class_t * target_cls)
 {
-    HB_ERR("%s NOT IMPLEMENTED", __func__);
-    return NULL;
+	int i;
+	CONSTANT_Methodref_info_t * constant_pool_entry = (CONSTANT_Methodref_info_t *)src_cls->const_pool[const_idx];
+	CONSTANT_NameAndType_info_t * method_nameandtype_offsets = (CONSTANT_NameAndType_info_t *)src_cls->const_pool[constant_pool_entry->name_and_type_idx];
+	u2 method_class_idx = constant_pool_entry->class_idx;
+
+	if(!target_cls){
+		target_cls = hb_resolve_class(method_class_idx, src_cls);
+	}
+
+		// if(!IS_RESOLVED(src_cls->const_pool[method_class_idx])) target_cls = hb_resolve_class(method_class_idx, src_cls);
+	for(i = 0; i < target_cls->methods_count; i++){
+		method_info_t * method_cand = &target_cls->methods[i];
+		if( strcmp(method_cand->name, hb_get_const_str(method_nameandtype_offsets->name_idx, src_cls)) &&
+			strcmp(method_cand->desc, hb_get_const_str(method_nameandtype_offsets->desc_idx, src_cls))) return method_cand; 
+	}
+
+	return hb_resolve_method(const_idx,src_cls,hb_get_super_class(target_cls));
+    // HB_ERR("%s NOT IMPLEMENTED", __func__);
+    // return NULL;
 }
 
 /* 
