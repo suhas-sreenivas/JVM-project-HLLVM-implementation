@@ -1789,8 +1789,13 @@ handle_new (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_newarray (u1 * bc, java_class_t * cls) {
-	HB_ERR("%s NOT IMPLEMENTED", __func__);
-	return -1;
+	var_t count = pop_val();
+	var_t operand;
+	operand.obj = gc_array_alloc(bc[1],count.int_val);
+	push_val(operand);
+	return 2;
+	// HB_ERR("%s NOT IMPLEMENTED", __func__);
+	// return -1;
 }
 
 static int

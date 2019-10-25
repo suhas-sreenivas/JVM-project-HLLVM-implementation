@@ -382,10 +382,15 @@ hb_resolve_method (u2 const_idx,
 	}
 
 		// if(!IS_RESOLVED(src_cls->const_pool[method_class_idx])) target_cls = hb_resolve_class(method_class_idx, src_cls);
+	method_info_t * method_cand;
+	const char* src_method_name = hb_get_const_str(method_nameandtype_offsets->name_idx, src_cls);
+    const char* src_method_desc = hb_get_const_str(method_nameandtype_offsets->desc_idx, src_cls);
 	for(i = 0; i < target_cls->methods_count; i++){
-		method_info_t * method_cand = &target_cls->methods[i];
-		if( strcmp(method_cand->name, hb_get_const_str(method_nameandtype_offsets->name_idx, src_cls)) &&
-			strcmp(method_cand->desc, hb_get_const_str(method_nameandtype_offsets->desc_idx, src_cls))) return method_cand; 
+		method_cand = target_cls->methods+i;
+		// printf("%s, %s\n", method_cand->desc, hb_get_const_str(target_cls->methods[i].desc_idx,target_cls));
+		// above to illustrate desc dont match(content meaning is same but method_cand->desc is more descriptive)
+		if( strcmp(hb_get_const_str(target_cls->methods[i].name_idx, target_cls), src_method_name) == 0 &&
+			strcmp(hb_get_const_str(target_cls->methods[i].desc_idx, target_cls), src_method_desc) == 0) return method_cand; 
 	}
 
 	return hb_resolve_method(const_idx,src_cls,hb_get_super_class(target_cls));
