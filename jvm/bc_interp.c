@@ -630,7 +630,7 @@ handle_astore (u1 * bc, java_class_t * cls) {
 
 static int
 handle_istore_n (u1 * bc, java_class_t * cls, int n) {
-    cur_thread->cur_frame->locals[bc[n]].int_val = pop_val().int_val;
+    cur_thread->cur_frame->locals[n].int_val = pop_val().int_val;
 	return 1;
 }
 
@@ -1851,8 +1851,13 @@ handle_anewarray (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_arraylength (u1 * bc, java_class_t * cls) {
-	HB_ERR("%s NOT IMPLEMENTED", __func__);
-	return -1;
+	var_t operand;
+	native_obj_t * array_ptr = (native_obj_t *)pop_val().obj->heap_ptr;
+	operand.int_val = array_ptr->flags.array.length;
+	push_val(operand);
+	return 1;
+	// HB_ERR("%s NOT IMPLEMENTED", __func__);
+	// return -1;
 }
 
 // WRITE ME
