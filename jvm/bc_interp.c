@@ -291,8 +291,10 @@ handle_ldc2_w (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_iload (u1 * bc, java_class_t * cls) {
-    HB_ERR("%s NOT IMPLEMENTED", __func__);
-    return -1;
+	push_val(cur_thread->cur_frame->locals[bc[1]]);
+	return 2;
+    // HB_ERR("%s NOT IMPLEMENTED", __func__);
+    // return -1;
 }
 
 static int
@@ -333,33 +335,35 @@ handle_aload (u1 * bc, java_class_t * cls) {
 	return 2;
 }
 
+static int
+handle_iload_n (u1 * bc, java_class_t * cls, int n) {
+	push_val(cur_thread->cur_frame->locals[n]);
+	return 1;
+}
 
 // WRITE ME
 static int
 handle_iload_0 (u1 * bc, java_class_t * cls) {
-    HB_ERR("%s NOT IMPLEMENTED", __func__);
-    return -1;
+    return handle_iload_n(bc, cls, 0);
 }
 
 // WRITE ME
 static int
 handle_iload_1 (u1 * bc, java_class_t * cls) {
-    HB_ERR("%s NOT IMPLEMENTED", __func__);
-    return -1;
+    return handle_iload_n(bc, cls, 1);
 }
 
 // WRITE ME
 static int
 handle_iload_2 (u1 * bc, java_class_t * cls) {
-    HB_ERR("%s NOT IMPLEMENTED", __func__);
-    return -1;
+    return handle_iload_n(bc, cls, 2);
+
 }
 
 // WRITE ME
 static int
 handle_iload_3 (u1 * bc, java_class_t * cls) {
-    HB_ERR("%s NOT IMPLEMENTED", __func__);
-    return -1;
+    return handle_iload_n(bc, cls, 3);
 }
 
 #define DO_LLOADN(n) \
