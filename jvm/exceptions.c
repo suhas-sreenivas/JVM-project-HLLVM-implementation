@@ -81,7 +81,11 @@ hb_excp_str_to_type (char * str)
 void
 hb_throw_and_create_excp (u1 type)
 {
-    HB_ERR("%s NOT IMPLEMENTED", __func__);
+	java_class_t * excp_cls = hb_get_or_load_class(excp_strs[type]);
+	obj_ref_t * excp_inst = gc_obj_alloc(excp_cls);
+	hb_push_ctor_frame(cur_thread, excp_inst);
+	hb_throw_exception(excp_inst);
+	return;
 }
 
 
@@ -130,6 +134,16 @@ get_excp_str (obj_ref_t * eref)
 	return ret;
 }
 
+static inline void 
+push_val (var_t v)
+{
+	op_stack_t * stack = cur_thread->cur_frame->op_stack;
+
+    if (stack->max_oprs < stack->sp + 1) 
+        HB_WARN("Stack overflow!");
+        
+	stack->oprs[++(stack->sp)] = v;
+}
 
 /*
  * Throws an exception using an
@@ -143,7 +157,41 @@ get_excp_str (obj_ref_t * eref)
  */
 void
 hb_throw_exception (obj_ref_t * eref)
-{
-    HB_ERR("%s NOT IMPLEMENTED", __func__);
-    exit(EXIT_FAILURE);
+{	
+	int i;
+	native_obj_t * excp_native_obj = (native_obj_t *) eref->heap_ptr;
+	const char * excp_class_name = hb_get_class_name(excp_native_obj->class);
+	// if(excp_class_name) printf("%s\n", excp_class_name); else printf("null");
+
+	excp_table_t * excp_table = cur_thread->cur_frame->minfo->code_attr->excp_table;
+	CONSTANT_Class_info_t * excp_candidate;
+	const char * excp_cand_type_name;
+
+	for(i=0; i<cur_thread->cur_frame->minfo->code_attr->excp_table_len; i++){
+		excp_candidate = (CONSTANT_Class_info_t * )cur_thread->class->const_pool[excp_table[i].catch_type];
+		excp_cand_type_name = hb_get_const_str(excp_candidate->name_idx, cur_thread->class);
+		// printf("%s\n", excp_cand_type_name);
+		// printf("%u\n", cur_thread->cur_frame->pc);
+		// printf("%u\n", excp_table[i].start_pc);
+		// printf("%u\n", excp_table[i].end_pc);
+		
+		if (!strcmp(excp_class_name, excp_cand_type_name))
+			if(cur_thread->cur_frame->pc >= excp_table[i].start_pc && cur_thread->cur_frame->pc <= excp_table[i].end_pc){
+				var_t v;
+				v.obj = eref;
+				push_val(v);
+				cur_thread->cur_frame->pc = excp_table[i].handler_pc;
+				return;
+			}
+	}
+
+	hb_pop_frame(cur_thread);
+	if(!cur_thread->cur_frame){
+		printf("Uncaught exception: %s \n", excp_class_name);
+	    exit(EXIT_FAILURE);
+	}
+	return hb_throw_exception(eref);
+
+	
+    // HB_ERR("%s NOT IMPLEMENTED", __func__);
 }

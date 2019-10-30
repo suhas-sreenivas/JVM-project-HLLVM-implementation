@@ -936,8 +936,13 @@ handle_swap (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_iadd (u1 * bc, java_class_t * cls) {
-	HB_ERR("%s NOT IMPLEMENTED", __func__);
-	return -1;
+	// HB_DEBUG("%s CALLED", __func__);
+	var_t value2 = pop_val();
+	var_t value1 = pop_val();
+	var_t result;
+	result.int_val = value1.int_val + value2.int_val;
+	push_val(result);
+	return 1;
 }
 
 static int
@@ -1048,8 +1053,15 @@ handle_dmul (u1 * bc, java_class_t * cls) {
 // WRITE ME: be careful with exceptions
 static int
 handle_idiv (u1 * bc, java_class_t * cls) {
-	HB_ERR("%s NOT IMPLEMENTED", __func__);
-	return -1;
+	// HB_DEBUG("%s CALLED", __func__);
+	var_t value2 = pop_val();
+	var_t value1 = pop_val();
+	var_t result;
+	result.int_val = (u4)((int)value1.int_val/(int)value2.int_val);
+	push_val(result);
+	return 1;
+	// HB_ERR("%s NOT IMPLEMENTED", __func__);
+	// return -1;
 }
 
 static int
@@ -1073,8 +1085,13 @@ handle_ddiv (u1 * bc, java_class_t * cls) {
 // WRITE ME: be careful with exceptions
 static int
 handle_irem (u1 * bc, java_class_t * cls) {
-	HB_ERR("%s NOT IMPLEMENTED", __func__);
-	return -1;
+	// HB_DEBUG("%s CALLED", __func__);
+	var_t value2 = pop_val();
+	var_t value1 = pop_val();
+	var_t result;
+	result.int_val = (u4)((int)value1.int_val - ((int)value1.int_val / (int)value2.int_val) * (int)value2.int_val);
+	push_val(result);
+	return 1;
 }
 
 static int
@@ -1098,8 +1115,14 @@ handle_drem (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_ineg (u1 * bc, java_class_t * cls) {
-	HB_ERR("%s NOT IMPLEMENTED", __func__);
-	return -1;
+	// HB_DEBUG("%s CALLED", __func__);
+	var_t value = pop_val();
+	var_t result;
+	int n = (int)value.int_val;
+	result.int_val = (u4)(-n);
+	// printf("%u \n", result.int_val);
+	push_val(result);
+	return 1;
 }
 
 static int
@@ -1863,8 +1886,8 @@ handle_arraylength (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_athrow (u1 * bc, java_class_t * cls) {
-	HB_ERR("%s NOT IMPLEMENTED", __func__);
-	return -1;
+	hb_throw_exception(pop_val().obj);
+	return 0;
 }
 
 static int
