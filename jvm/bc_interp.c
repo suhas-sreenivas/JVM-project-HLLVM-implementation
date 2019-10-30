@@ -940,7 +940,7 @@ handle_iadd (u1 * bc, java_class_t * cls) {
 	var_t value2 = pop_val();
 	var_t value1 = pop_val();
 	var_t result;
-	result.int_val = value1.int_val + value2.int_val;
+	result.int_val = (u4)((int)value1.int_val+(int)value2.int_val);
 	push_val(result);
 	return 1;
 }
@@ -978,8 +978,12 @@ handle_dadd (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_isub (u1 * bc, java_class_t * cls) {
-	HB_ERR("%s NOT IMPLEMENTED", __func__);
-	return -1;
+	var_t value2 = pop_val();
+	var_t value1 = pop_val();
+	var_t result;
+	result.int_val = (u4)((int)value1.int_val - (int)value2.int_val);
+	push_val(result);
+	return 1;
 }
 
 static int
@@ -1015,8 +1019,12 @@ handle_dsub (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_imul (u1 * bc, java_class_t * cls) {
-	HB_ERR("%s NOT IMPLEMENTED", __func__);
-	return -1;
+	var_t value2 = pop_val();
+	var_t value1 = pop_val();
+	var_t result;
+	result.int_val = (u4)((int)value1.int_val * (int)value2.int_val);
+	push_val(result);
+	return 1;
 }
 
 static int
