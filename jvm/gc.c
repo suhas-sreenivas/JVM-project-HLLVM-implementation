@@ -289,6 +289,8 @@ sweep (gc_state_t * state)
 			if(entry->state == GC_REF_ABSENT){
 				obj_ref_t * entry_key = (obj_ref_t *)nk_htable_get_iter_key(iter);
 				native_obj_t * entry_inst = (native_obj_t *)entry_key->heap_ptr;
+				state->collect_stats.obj_collected++;
+				state->collect_stats.bytes_reclaimed += sizeof(native_obj_t);
 				ref_tbl_remove_ref(entry_key);
 				object_free(entry_inst);
 				free(entry_key);
