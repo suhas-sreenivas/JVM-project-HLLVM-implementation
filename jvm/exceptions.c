@@ -158,6 +158,8 @@ push_val (var_t v)
 void
 hb_throw_exception (obj_ref_t * eref)
 {	
+	if(!eref) hb_throw_and_create_excp(EXCP_NULL_PTR);
+	
 	int i;
 	native_obj_t * excp_native_obj = (native_obj_t *) eref->heap_ptr;
 	const char * excp_class_name = hb_get_class_name(excp_native_obj->class);
@@ -168,7 +170,7 @@ hb_throw_exception (obj_ref_t * eref)
 	const char * excp_cand_type_name;
 
 	for(i=0; i<cur_thread->cur_frame->minfo->code_attr->excp_table_len; i++){
-		excp_candidate = (CONSTANT_Class_info_t * )cur_thread->class->const_pool[excp_table[i].catch_type];
+		excp_candidate = (CONSTANT_Class_info_t * )cur_thread->cur_frame->cls->const_pool[excp_table[i].catch_type];
 		excp_cand_type_name = hb_get_const_str(excp_candidate->name_idx, cur_thread->class);
 		// printf("%s\n", excp_cand_type_name);
 		// printf("%u\n", cur_thread->cur_frame->pc);
@@ -187,11 +189,11 @@ hb_throw_exception (obj_ref_t * eref)
 
 	hb_pop_frame(cur_thread);
 	if(!cur_thread->cur_frame){
-		printf("Uncaught exception: %s \n", excp_class_name);
+		char * excp_str = get_excp_str(eref);
+		if(excp_str) printf("Exception in thread \"main\" %s: %s \n", excp_class_name, excp_str);
+		else printf("Exception in thread \"main\" %s \n", excp_class_name);
+		free(excp_str);
 	    exit(EXIT_FAILURE);
 	}
 	return hb_throw_exception(eref);
-
-	
-    // HB_ERR("%s NOT IMPLEMENTED", __func__);
 }

@@ -1063,6 +1063,7 @@ static int
 handle_idiv (u1 * bc, java_class_t * cls) {
 	// HB_DEBUG("%s CALLED", __func__);
 	var_t value2 = pop_val();
+	if(value2.int_val == 0) { hb_throw_and_create_excp(EXCP_ARITH); return 0; }
 	var_t value1 = pop_val();
 	var_t result;
 	result.int_val = (u4)((int)value1.int_val/(int)value2.int_val);
@@ -1095,6 +1096,7 @@ static int
 handle_irem (u1 * bc, java_class_t * cls) {
 	// HB_DEBUG("%s CALLED", __func__);
 	var_t value2 = pop_val();
+	if(value2.int_val == 0) { hb_throw_and_create_excp(EXCP_ARITH); return 0; }
 	var_t value1 = pop_val();
 	var_t result;
 	result.int_val = (u4)((int)value1.int_val - ((int)value1.int_val / (int)value2.int_val) * (int)value2.int_val);
@@ -1829,6 +1831,8 @@ static int
 handle_newarray (u1 * bc, java_class_t * cls) {
 	var_t count = pop_val();
 	var_t operand;
+	int n = (int)count.int_val;
+	if(n < 0) { hb_throw_and_create_excp(EXCP_NEG_ARR_SIZE); return 0; }
 	operand.obj = gc_array_alloc(bc[1],count.int_val);
 	push_val(operand);
 	return 2;
@@ -1883,12 +1887,13 @@ handle_anewarray (u1 * bc, java_class_t * cls) {
 static int
 handle_arraylength (u1 * bc, java_class_t * cls) {
 	var_t operand;
-	native_obj_t * array_ptr = (native_obj_t *)pop_val().obj->heap_ptr;
+	obj_ref_t * ref = pop_val().obj;
+	if(!ref) { hb_throw_and_create_excp(EXCP_NULL_PTR); return 0; }
+	// native_obj_t * array_ptr = (native_obj_t *)pop_val().obj->heap_ptr;
+	native_obj_t * array_ptr = (native_obj_t *)ref->heap_ptr;
 	operand.int_val = array_ptr->flags.array.length;
 	push_val(operand);
 	return 1;
-	// HB_ERR("%s NOT IMPLEMENTED", __func__);
-	// return -1;
 }
 
 // WRITE ME
