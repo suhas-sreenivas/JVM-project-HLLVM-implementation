@@ -195,5 +195,6 @@ hb_throw_exception (obj_ref_t * eref)
 		free(excp_str);
 	    exit(EXIT_FAILURE);
 	}
+	
 	return hb_throw_exception(eref);
 }

@@ -936,7 +936,6 @@ handle_swap (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_iadd (u1 * bc, java_class_t * cls) {
-	// HB_DEBUG("%s CALLED", __func__);
 	var_t value2 = pop_val();
 	var_t value1 = pop_val();
 	var_t result;
@@ -1061,7 +1060,6 @@ handle_dmul (u1 * bc, java_class_t * cls) {
 // WRITE ME: be careful with exceptions
 static int
 handle_idiv (u1 * bc, java_class_t * cls) {
-	// HB_DEBUG("%s CALLED", __func__);
 	var_t value2 = pop_val();
 	if(value2.int_val == 0) { hb_throw_and_create_excp(EXCP_ARITH); return 0; }
 	var_t value1 = pop_val();
@@ -1069,8 +1067,6 @@ handle_idiv (u1 * bc, java_class_t * cls) {
 	result.int_val = (u4)((int)value1.int_val/(int)value2.int_val);
 	push_val(result);
 	return 1;
-	// HB_ERR("%s NOT IMPLEMENTED", __func__);
-	// return -1;
 }
 
 static int
@@ -1094,7 +1090,6 @@ handle_ddiv (u1 * bc, java_class_t * cls) {
 // WRITE ME: be careful with exceptions
 static int
 handle_irem (u1 * bc, java_class_t * cls) {
-	// HB_DEBUG("%s CALLED", __func__);
 	var_t value2 = pop_val();
 	if(value2.int_val == 0) { hb_throw_and_create_excp(EXCP_ARITH); return 0; }
 	var_t value1 = pop_val();
@@ -1125,12 +1120,10 @@ handle_drem (u1 * bc, java_class_t * cls) {
 // WRITE ME
 static int
 handle_ineg (u1 * bc, java_class_t * cls) {
-	// HB_DEBUG("%s CALLED", __func__);
 	var_t value = pop_val();
 	var_t result;
 	int n = (int)value.int_val;
 	result.int_val = (u4)(-n);
-	// printf("%u \n", result.int_val);
 	push_val(result);
 	return 1;
 }
@@ -1822,8 +1815,6 @@ handle_new (u1 * bc, java_class_t * cls) {
 	operand.obj = gc_obj_alloc(resolved_class);
 	push_val(operand);
 	return 3;
-	// HB_ERR("%s NOT IMPLEMENTED", __func__);
-	// return -1;
 }
 
 // WRITE ME
@@ -1836,8 +1827,6 @@ handle_newarray (u1 * bc, java_class_t * cls) {
 	operand.obj = gc_array_alloc(bc[1],count.int_val);
 	push_val(operand);
 	return 2;
-	// HB_ERR("%s NOT IMPLEMENTED", __func__);
-	// return -1;
 }
 
 static int
