@@ -163,7 +163,6 @@ hb_throw_exception (obj_ref_t * eref)
 	int i;
 	native_obj_t * excp_native_obj = (native_obj_t *) eref->heap_ptr;
 	const char * excp_class_name = hb_get_class_name(excp_native_obj->class);
-	// if(excp_class_name) printf("%s\n", excp_class_name); else printf("null");
 
 	excp_table_t * excp_table = cur_thread->cur_frame->minfo->code_attr->excp_table;
 	CONSTANT_Class_info_t * excp_candidate;
@@ -172,10 +171,6 @@ hb_throw_exception (obj_ref_t * eref)
 	for(i=0; i<cur_thread->cur_frame->minfo->code_attr->excp_table_len; i++){
 		excp_candidate = (CONSTANT_Class_info_t * )cur_thread->cur_frame->cls->const_pool[excp_table[i].catch_type];
 		excp_cand_type_name = hb_get_const_str(excp_candidate->name_idx, cur_thread->class);
-		// printf("%s\n", excp_cand_type_name);
-		// printf("%u\n", cur_thread->cur_frame->pc);
-		// printf("%u\n", excp_table[i].start_pc);
-		// printf("%u\n", excp_table[i].end_pc);
 		
 		if (!strcmp(excp_class_name, excp_cand_type_name))
 			if(cur_thread->cur_frame->pc >= excp_table[i].start_pc && cur_thread->cur_frame->pc <= excp_table[i].end_pc){

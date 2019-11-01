@@ -299,7 +299,6 @@ sweep (gc_state_t * state)
 	} while (nk_htable_iter_advance(iter) != 0);
 
 	nk_destroy_htable_iter(iter);
-    // HB_ERR("%s NOT IMPLEMENTED", __func__);	
 	return 0;
 }
 
@@ -464,7 +463,7 @@ scan_base_obj (gc_state_t * gc_state, void * priv_data)
 			scan_base_obj(gc_state, (native_obj_t *)cand_ref->heap_ptr);
 		}
 	}
-    // HB_ERR("%s NOT IMPLEMENTED", __func__);
+
 	return 0;
 }
 
@@ -500,7 +499,6 @@ scan_base_frame (gc_state_t * gc_state, void * priv_data)
 
 	if(stack_frame->next) scan_base_frame(gc_state, stack_frame->next);
 
-    // HB_ERR("%s NOT IMPLEMENTED", __func__);
 	return 0;
 }
 
@@ -523,7 +521,6 @@ scan_class_map (gc_state_t * gc_state, void * priv_data)
     do {
         char * name = (char*)nk_htable_get_iter_key(iter);
         java_class_t * cls = (java_class_t*)nk_htable_get_iter_value(iter);
-        // HB_INFO("%s", name);
 		for(int i = 0; i<cls->fields_count; i++){
 			field_info_t cand = cls->fields[i];
 			if(cand.acc_flags == ACC_STATIC){
@@ -536,7 +533,6 @@ scan_class_map (gc_state_t * gc_state, void * priv_data)
     } while (nk_htable_iter_advance(iter) != 0);
 
     nk_destroy_htable_iter(iter);
-    // HB_ERR("%s NOT IMPLEMENTED", __func__);
 	return 0;
 }
 

@@ -293,8 +293,6 @@ static int
 handle_iload (u1 * bc, java_class_t * cls) {
 	push_val(cur_thread->cur_frame->locals[bc[1]]);
 	return 2;
-    // HB_ERR("%s NOT IMPLEMENTED", __func__);
-    // return -1;
 }
 
 static int
@@ -335,6 +333,7 @@ handle_aload (u1 * bc, java_class_t * cls) {
 	return 2;
 }
 
+//helper for iload_n functions
 static int
 handle_iload_n (u1 * bc, java_class_t * cls, int n) {
 	push_val(cur_thread->cur_frame->locals[n]);
@@ -585,8 +584,6 @@ static int
 handle_istore (u1 * bc, java_class_t * cls) {
 	cur_thread->cur_frame->locals[bc[1]].int_val = pop_val().int_val;
 	return 2;
-	// HB_ERR("%s NOT IMPLEMENTED", __func__);
-	// return -1;
 }
 
 static int
@@ -628,6 +625,7 @@ handle_astore (u1 * bc, java_class_t * cls) {
 	return 2;
 }
 
+// helper for istore_n functions
 static int
 handle_istore_n (u1 * bc, java_class_t * cls, int n) {
     cur_thread->cur_frame->locals[n].int_val = pop_val().int_val;

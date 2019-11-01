@@ -253,7 +253,7 @@ hb_resolve_class (u2 const_idx, java_class_t * src_cls)
 	}
 
 	if (IS_RESOLVED(src_cls->const_pool[const_idx])) {
-		return (java_class_t *)MASK_RESOLVED_BIT(src_cls->const_pool[const_idx]); //typecast to java_class_t?
+		return (java_class_t *)MASK_RESOLVED_BIT(src_cls->const_pool[const_idx]);
 	}
 
 	CONSTANT_Class_info_t * constant_pool_entry = (CONSTANT_Class_info_t *)src_cls->const_pool[const_idx];
@@ -275,7 +275,6 @@ hb_resolve_class (u2 const_idx, java_class_t * src_cls)
 		return class;
 	}
 
-    // HB_ERR("%s NOT IMPLEMENTED", __func__);
     return NULL;
 }
 
@@ -381,7 +380,6 @@ hb_resolve_method (u2 const_idx,
 		target_cls = hb_resolve_class(method_class_idx, src_cls);
 	}
 
-		// if(!IS_RESOLVED(src_cls->const_pool[method_class_idx])) target_cls = hb_resolve_class(method_class_idx, src_cls);
 	method_info_t * method_cand;
 	const char* src_method_name = hb_get_const_str(method_nameandtype_offsets->name_idx, src_cls);
     const char* src_method_desc = hb_get_const_str(method_nameandtype_offsets->desc_idx, src_cls);
@@ -394,8 +392,6 @@ hb_resolve_method (u2 const_idx,
 	}
 
 	return hb_resolve_method(const_idx,src_cls,hb_get_super_class(target_cls));
-    // HB_ERR("%s NOT IMPLEMENTED", __func__);
-    // return NULL;
 }
 
 /* 
